@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>&lt;piano-keyboard&gt; demo</title>
+  <link rel="import" href="../piano-keyboard/piano-keyboard.html">
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Just+Another+Hand" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="reset.css">
+<style>
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+h1, p {
+    font-family: 'Just Another Hand';
+    font-size: 2em;
+    text-align: center;
+}
+h1 {
+    font-size: 4em;
+    margin: 0.8em 0;
+}
+.chord {
+    display: block;
+    float: left;
+    margin-top: 1em;
+    width: 22%;
+    margin-right: 3%;
+}
+.chord:nth-child(4n+1) {
+    margin-right: 0;
+}
+.chord:nth-child(4n+2) {
+    clear: both;
+}
+piano-keyboard {
+  --white-key-fill: unset;
+  --black-key-fill: unset;
+  --white-key-pressed-fill: unset;
+  --black-key-pressed-fill: unset;
+  --white-key-stroke: #333;
+  --top-cover-fill: unset;
+  --note-name-font-family: 'Just Another Hand', sans-serif;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Chords in "Jingle Bells"</h1>
+
+<div class="chord">
+<p>C</p>
+<piano-keyboard from="37" to="49" pressed="40,44,47"></piano-keyboard>
+</div>
+<div class="chord">
+<p>C5+</p>
+<piano-keyboard from="37" to="49" pressed="40,44,48"></piano-keyboard>
+</div>
+<div class="chord">
+<p>Dm</p>
+<piano-keyboard from="40" to="52" pressed="42,45,49"></piano-keyboard>
+</div>
+<div class="chord">
+<p>D7</p>
+<piano-keyboard from="40" to="54" pressed="42,46,49,52"></piano-keyboard>
+</div>
+<div class="chord">
+<p>F</p>
+<piano-keyboard from="42" to="54" pressed="45,49,52"></piano-keyboard>
+</div>
+<div class="chord">
+<p>G</p>
+<piano-keyboard from="44" to="56" pressed="47,51,54"></piano-keyboard>
+</div>
+<div class="chord">
+<p>G7</p>
+<piano-keyboard from="45" to="59" pressed="47,51,54,57"></piano-keyboard>
+</div>
+<div class="chord">
+<p>A7</p>
+<piano-keyboard from="47" to="61" pressed="49,53,56,59"></piano-keyboard>
+</div>
+
+</body>
+</html>
