@@ -1,3 +1,108 @@
 <style>
 piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margin: 1em 0; background: #EEE; }
 </style>
+
+<template id="piano-keyboard-template">
+<style>
+:host { display: flex; flex-direction: column; justify-content: center; contain: content; margin: 1em 0; background: #EEE; }
+:host([hidden]) { display: none; }
+</style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <style>
+        [href="#symbol-white-key"] { fill: #FFF; }
+        [href="#symbol-black-key"] { fill: #000; }
+    </style>
+    <symbol id="symbol-white-key">
+        <rect x="0.5" y="-15" rx="1" ry="1" width="15" height="115" fill="inherit" />
+    </symbol>
+    <symbol id="symbol-black-key">
+        <rect x="0" y="-15" rx="1" ry="1" width="8" height="80" fill="inherit" />
+    </symbol>
+</svg>
+</template>
+
+
+<script>
+(function() {
+  // Move style to master document (see https://goo.gl/EGXzpw)
+  const style = document.currentScript.ownerDocument.querySelector('style');
+  document.head.appendChild(style);
+})();
+</script>
+
+
+<script>
+class PianoKeyboard extends HTMLElement {
+
+  static isBlackKey(key) {
+      return [0, 2, 5, 7, 10].includes(key % 12);
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+
+    this.SVG_XMLNS = "http://www.w3.org/2000/svg";
+
+    const importDoc = document.currentScript.ownerDocument;
+    const template = importDoc.getElementById('piano-keyboard-template').content;
+    this.shadowRoot.appendChild(template.cloneNode(true));
+    this.drawing = this.shadowRoot.querySelector('svg');
+
+    // TODO(kantoniak): Move to connectedCallback
+    this._render();
+  }
+
+  _render() {
+    const startKey = 40;
+    const endKey = 64;
+
+    console.assert(!PianoKeyboard.isBlackKey(startKey));
+    console.assert(!PianoKeyboard.isBlackKey(endKey));
+
+    this._renderWhiteKeys(startKey, endKey);
+    this._renderBlackKeys(startKey, endKey);
+  }
+
+  _renderWhiteKeys(startKey, endKey) {
+    let currentX = 0;
+    for (let k = startKey; k <= endKey; k++) {
+        if (PianoKeyboard.isBlackKey(k)) {
+            continue;
+        }
+        
+        var key = document.createElementNS(this.SVG_XMLNS, 'use');
+        key.setAttribute('href', '#symbol-white-key');
+        key.setAttribute('x', currentX);
+        this.drawing.appendChild(key);
+        currentX += 16;
+    }
+
+    let width = currentX;
+    this.drawing.setAttribute('viewBox', '0 0 ' + width + ' 100');
+  }
+
+  _renderBlackKeys(startKey, endKey) {
+    const range = (start, end) => { return new Array(end - start).fill().map((d, i) => i + start); }
+    const blackKeys = range(startKey, endKey).filter(PianoKeyboard.isBlackKey);
+    
+    const baseOffset = this._getKeyOffset(startKey);
+
+    blackKeys.forEach((k) => {
+        var key = document.createElementNS(this.SVG_XMLNS, 'use');
+        key.setAttribute('href', '#symbol-black-key');
+        key.setAttribute('x', (this._getKeyOffset(k) - baseOffset) * 16);
+        this.drawing.appendChild(key);
+    });
+  }
+
+  _getKeyOffset(key) {
+      const offsets = [0.25, 0.5, 1.3, 2, 2.5, 3.22, 3.5, 4.28, 5, 5, 6.20, 6];
+      let offsetForKey = ((key%12)+12)%12;
+      return 7 * Math.floor(key/12) + offsets[offsetForKey];
+  }
+
+}
+
+window.customElements.define('piano-keyboard', PianoKeyboard);
+</script>
