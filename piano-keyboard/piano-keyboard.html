@@ -11,7 +11,9 @@ piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margi
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <style>
         [href="#symbol-white-key"] { fill: var(--white-key-fill, #FFF); }
+        [href="#symbol-white-key"].pressed { fill: var(--white-key-pressed-fill, #BBB); }
         [href="#symbol-black-key"] { fill: var(--black-key-fill, #000); }
+        [href="#symbol-black-key"].pressed { fill: var(--black-key-pressed-fill, #666); }
     </style>
     <symbol id="symbol-white-key">
         <rect x="0.5" y="-15" rx="1" ry="1" width="15" height="115" fill="inherit" />
@@ -35,8 +37,53 @@ piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margi
 <script>
 class PianoKeyboard extends HTMLElement {
 
+  static get observedAttributes() {
+    return ['pressed'];
+  }
+
+  get pressed() {
+    return this.getAttribute('pressed');
+  }
+
+  set pressed(val) {
+    if (val) {
+      this.setAttribute('pressed', val);
+    } else {
+      this.removeAttribute('pressed');
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    const hasValue = newValue !== null;
+    if (name == 'pressed') {
+      this._releaseAllKeys();
+      if (hasValue) {
+        let newPressed = newValue.split(',').map(e => parseInt(e.trim()));
+        console.log(name, newPressed);
+        console.log(this.shadowRoot.querySelector('svg').childNodes);
+        newPressed.forEach(k => this._pressKey(k));
+      } else {
+        this.removeAttribute('pressed');
+      }
+    }
+  }
+
+  _releaseAllKeys() {
+    this.drawing
+      .querySelectorAll('[href="#symbol-white-key"], [href="#symbol-black-key"]')
+      .forEach(e => e.setAttribute('class', ''));
+  }
+
+  _pressKey(k) {
+    let key = this.drawing.getElementById('key-'+k);
+    if (key == null) {
+      return;
+    }
+    key.setAttribute('class', 'pressed');
+  }
+
   static isBlackKey(key) {
-      return [0, 2, 5, 7, 10].includes(key % 12);
+    return [0, 2, 5, 7, 10].includes(key % 12);
   }
 
   constructor() {
@@ -50,8 +97,19 @@ class PianoKeyboard extends HTMLElement {
     this.shadowRoot.appendChild(template.cloneNode(true));
     this.drawing = this.shadowRoot.querySelector('svg');
 
-    // TODO(kantoniak): Move to connectedCallback
     this._render();
+  }
+
+  connectedCallback() {
+    this._upgradeProperty('pressed');
+  }
+
+  _upgradeProperty(prop) {
+    if (this.hasOwnProperty(prop)) {
+      let value = this[prop];
+      delete this[prop];
+      this[prop] = value;
+    }
   }
 
   _render() {
@@ -75,6 +133,7 @@ class PianoKeyboard extends HTMLElement {
         var key = document.createElementNS(this.SVG_XMLNS, 'use');
         key.setAttribute('href', '#symbol-white-key');
         key.setAttribute('x', currentX);
+        key.setAttribute('id', 'key-'+k);
         this.drawing.appendChild(key);
         currentX += 16;
     }
@@ -93,6 +152,7 @@ class PianoKeyboard extends HTMLElement {
         var key = document.createElementNS(this.SVG_XMLNS, 'use');
         key.setAttribute('href', '#symbol-black-key');
         key.setAttribute('x', (this._getKeyOffset(k) - baseOffset) * 16);
+        key.setAttribute('id', 'key-'+k);
         this.drawing.appendChild(key);
     });
   }
