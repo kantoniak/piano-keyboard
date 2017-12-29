@@ -1,16 +1,17 @@
 <style>
+piano-keyboard { background: none; }
 piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margin: 1em 0; background: #EEE; }
 </style>
 
 <template id="piano-keyboard-template">
 <style>
-:host { display: flex; flex-direction: column; justify-content: center; contain: content; margin: 1em 0; background: #EEE; }
+:host { display: flex; flex-direction: column; justify-content: center; align-items: stretch; align-content: stretch; contain: content; margin: 1em 0; background: #EEE; }
 :host([hidden]) { display: none; }
 </style>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <style>
-        [href="#symbol-white-key"] { fill: #FFF; }
-        [href="#symbol-black-key"] { fill: #000; }
+        [href="#symbol-white-key"] { fill: var(--white-key-fill, #FFF); }
+        [href="#symbol-black-key"] { fill: var(--black-key-fill, #000); }
     </style>
     <symbol id="symbol-white-key">
         <rect x="0.5" y="-15" rx="1" ry="1" width="15" height="115" fill="inherit" />

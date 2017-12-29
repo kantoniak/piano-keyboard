@@ -4,19 +4,54 @@
   <meta charset="utf-8" />
   <title>&lt;piano-keyboard&gt; demo</title>
   <link rel="import" href="piano-keyboard/piano-keyboard.html">
-
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="reset.css">
 <style>
-piano-keyboard { margin: 0 auto; padding: 1em; background: #333; }
+body, html {
+  width: 100%;
+  height: 100%;
+}
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10vh 100px 0;
+  background: #7E827A;
+  
+}
+article {
+  margin: 0 auto;
+  max-width: 1000px;
+  height: 80vh;
+}
+h1, p {
+  margin: 0.25em 0;
+  line-height: 1.3;
+  font-size: 1.25em;
+  font-family: 'Share Tech Mono', monospace;
+  color: #FFF6E5;
+}
+h1 {
+  font-size: 3em;
+}
+piano-keyboard {
+  max-height: 50vh;
+  flex: 1 1 10px;
+  margin: 2em auto 0;
+  --white-key-fill: #FFF6E5;
+  --black-key-fill: #333840;
+}
 </style>
 
 </head>
 <body>
 
-  <h1>&lt;piano-keyboard&gt;</h1>
-  <p>Custom web component in vanilla HTML and JS. Written using custom components API, Shadow DOM and HTML Imports.</p>
-  <p><em>Note:</em> This is a work-in-progress component.</p>
+  <article>
+    <h1>&lt;piano-keyboard&gt;</h1>
+    <p>Custom web component in vanilla HTML and JS. Written using custom components API, Shadow DOM and HTML Imports.</p>
+    <p><em>Note:</em> This is a work-in-progress component.</p>
 
-  <piano-keyboard></piano-keyboard>
+    <piano-keyboard></piano-keyboard>
+  </article>
 
 </body>
 </html>
