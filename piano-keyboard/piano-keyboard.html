@@ -62,6 +62,26 @@ piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margi
 
 class PianoUtils {
 
+  static isValidKeyNumber(k) {
+    return 1 <= k && k <= 88;
+  }
+
+  static isBlackKey(key) {
+    return [0, 2, 5, 7, 10].includes(key % 12);
+  }
+
+  static previousWhiteKey(key) {
+    key--;
+    while (PianoUtils.isBlackKey(key)) key--;
+    return key < 1 ? null : key;
+  }
+
+  static nextWhiteKey(key) {
+    key++;
+    while (PianoUtils.isBlackKey(key)) key++;
+    return key > 88 ? null : key;
+  }
+
   static keyToNote(k, addOctave) {
     console.assert(k > 0);
     let octave = Math.floor( (k+8) / 12 );
@@ -76,10 +96,6 @@ class PianoUtils {
     }
 
     return result;
-  }
-
-  static isValidKeyNumber(k) {
-    return 1 <= k && k <= 88;
   }
 
 }
@@ -166,10 +182,6 @@ class PianoKeyboard extends HTMLElement {
       .forEach(e => e.setAttribute('class', ''));
   }
 
-  static isBlackKey(key) {
-    return [0, 2, 5, 7, 10].includes(key % 12);
-  }
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -209,8 +221,8 @@ class PianoKeyboard extends HTMLElement {
     const startKey = parseInt(this.getAttribute('from') || 40);
     const endKey = parseInt(this.getAttribute('to') || 64);
 
-    console.assert(!PianoKeyboard.isBlackKey(startKey));
-    console.assert(!PianoKeyboard.isBlackKey(endKey));
+    console.assert(!PianoUtils.isBlackKey(startKey));
+    console.assert(!PianoUtils.isBlackKey(endKey));
 
     this._renderWhiteKeys(startKey, endKey);
     this._renderBlackKeys(startKey, endKey);
@@ -219,7 +231,7 @@ class PianoKeyboard extends HTMLElement {
   _renderWhiteKeys(startKey, endKey) {
     let currentX = 0;
     for (let k = startKey; k <= endKey; k++) {
-        if (PianoKeyboard.isBlackKey(k)) {
+        if (PianoUtils.isBlackKey(k)) {
             continue;
         }
         
@@ -247,7 +259,7 @@ class PianoKeyboard extends HTMLElement {
 
   _renderBlackKeys(startKey, endKey) {
     const range = (start, end) => { return new Array(end - start).fill().map((d, i) => i + start); }
-    const blackKeys = range(startKey, endKey).filter(PianoKeyboard.isBlackKey);
+    const blackKeys = range(startKey, endKey).filter(PianoUtils.isBlackKey);
     
     const baseOffset = this._getKeyOffset(startKey);
 
