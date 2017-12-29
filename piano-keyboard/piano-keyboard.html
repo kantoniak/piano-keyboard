@@ -62,12 +62,20 @@ piano-keyboard:not(:defined) { display: block; width: 6.47em; height: 4em; margi
 
 class PianoUtils {
 
-  static keyToNote(k, addOctave = true) {
+  static keyToNote(k, addOctave) {
     console.assert(k > 0);
     let octave = Math.floor( (k+8) / 12 );
     let offset = (((k-1)%12)+12)%12;
     let note = ['A', 'B', 'H', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'][offset];
-    return note + (addOctave ? octave : '');
+    
+    let result = note;
+    if (addOctave == 'always') {
+      result += octave;
+    } else if (addOctave =='only-c' && note == 'C') {
+      result += octave;
+    }
+
+    return result;
   }
 
   static isValidKeyNumber(k) {
@@ -227,7 +235,7 @@ class PianoKeyboard extends HTMLElement {
         key.setAttribute('x', currentX + 8);
         key.setAttribute('y', 88.5);
         key.setAttribute('class', 'symbol-note');
-        key.textContent = PianoUtils.keyToNote(k, true);
+        key.textContent = PianoUtils.keyToNote(k, 'only-c');
         this.drawing.insertBefore(key, this.topCover);
 
         currentX += 16;
