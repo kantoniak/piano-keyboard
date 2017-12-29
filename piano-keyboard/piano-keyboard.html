@@ -70,12 +70,16 @@ class PianoUtils {
     return note + (addOctave ? octave : '');
   }
 
+  static isValidKeyNumber(k) {
+    return 1 <= k && k <= 88;
+  }
+
 }
 
 class PianoKeyboard extends HTMLElement {
 
   static get observedAttributes() {
-    return ['pressed'];
+    return ['pressed', 'from', 'to'];
   }
 
   get pressed() {
@@ -90,23 +94,50 @@ class PianoKeyboard extends HTMLElement {
     }
   }
 
+  get from() {
+    return this.getAttribute('from');
+  }
+
+  set from(val) {
+    if (val) {
+      if (PianoUtils.isValidKeyNumber(val)) {
+        this.setAttribute('from', val);
+      }
+    } else {
+      this.removeAttribute('from');
+    }
+  }
+
+  get to() {
+    return this.getAttribute('to');
+  }
+
+  set to(val) {
+    if (val) {
+      if (PianoUtils.isValidKeyNumber(val)) {
+        this.setAttribute('to', val);
+      }
+    } else {
+      this.removeAttribute('to');
+    }
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
     const hasValue = newValue !== null;
     if (name == 'pressed') {
       this._releaseAllKeys();
       if (hasValue) {
         let newPressed = newValue.split(',').map(e => parseInt(e.trim()));
-        newPressed.forEach(k => this._pressKey(k));
+        this._pressKeys(newPressed);
       } else {
         this.removeAttribute('pressed');
       }
     }
-  }
-
-  _releaseAllKeys() {
-    this.drawing
-      .querySelectorAll('[href="#symbol-white-key"], [href="#symbol-black-key"]')
-      .forEach(e => e.setAttribute('class', ''));
+    if (name == 'from' || name == 'to') {
+      this._render();
+      let pressed = this.getAttribute('pressed').split(',').map(e => parseInt(e.trim()));
+      this._pressKeys(pressed);
+    }
   }
 
   _pressKey(k) {
@@ -115,6 +146,16 @@ class PianoKeyboard extends HTMLElement {
       return;
     }
     key.setAttribute('class', 'pressed');
+  }
+
+  _pressKeys(keys) {
+    keys.forEach(k => this._pressKey(k));
+  }
+
+  _releaseAllKeys() {
+    this.drawing
+      .querySelectorAll('[href="#symbol-white-key"], [href="#symbol-black-key"]')
+      .forEach(e => e.setAttribute('class', ''));
   }
 
   static isBlackKey(key) {
@@ -148,9 +189,17 @@ class PianoKeyboard extends HTMLElement {
     }
   }
 
+  _removeRendered() {
+    this.drawing
+      .querySelectorAll('[href="#symbol-white-key"], [href="#symbol-black-key"], .symbol-note')
+      .forEach(node => node.parentNode.removeChild(node));
+  }
+
   _render() {
-    const startKey = 40;
-    const endKey = 64;
+    this._removeRendered();
+
+    const startKey = parseInt(this.getAttribute('from') || 40);
+    const endKey = parseInt(this.getAttribute('to') || 64);
 
     console.assert(!PianoKeyboard.isBlackKey(startKey));
     console.assert(!PianoKeyboard.isBlackKey(endKey));
@@ -178,9 +227,8 @@ class PianoKeyboard extends HTMLElement {
         key.setAttribute('x', currentX + 8);
         key.setAttribute('y', 88.5);
         key.setAttribute('class', 'symbol-note');
-        key.textContent = PianoUtils.keyToNote(k, false);
+        key.textContent = PianoUtils.keyToNote(k, true);
         this.drawing.insertBefore(key, this.topCover);
-        console.log(key);
 
         currentX += 16;
     }
