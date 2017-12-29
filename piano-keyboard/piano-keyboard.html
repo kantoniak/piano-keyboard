@@ -223,6 +223,7 @@ class PianoKeyboard extends HTMLElement {
 
     console.assert(!PianoUtils.isBlackKey(startKey));
     console.assert(!PianoUtils.isBlackKey(endKey));
+    console.assert(startKey <= endKey);
 
     this._renderWhiteKeys(startKey, endKey);
     this._renderBlackKeys(startKey, endKey);
