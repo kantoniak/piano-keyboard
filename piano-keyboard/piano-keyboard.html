@@ -61,8 +61,6 @@ class PianoKeyboard extends HTMLElement {
       this._releaseAllKeys();
       if (hasValue) {
         let newPressed = newValue.split(',').map(e => parseInt(e.trim()));
-        console.log(name, newPressed);
-        console.log(this.shadowRoot.querySelector('svg').childNodes);
         newPressed.forEach(k => this._pressKey(k));
       } else {
         this.removeAttribute('pressed');
