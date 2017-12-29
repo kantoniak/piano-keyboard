@@ -261,7 +261,8 @@ class PianoKeyboard extends HTMLElement {
     const range = (start, end) => { return new Array(end - start).fill().map((d, i) => i + start); }
     const blackKeys = range(startKey, endKey).filter(PianoUtils.isBlackKey);
     
-    const baseOffset = this._getKeyOffset(startKey);
+    const offsetFix = 0.5 * [9, 11].includes(startKey % 12) - 0.5 * [3, 8].includes(startKey % 12);
+    const baseOffset = this._getKeyOffset(startKey) + offsetFix;
 
     blackKeys.forEach((k) => {
         var key = document.createElementNS(this.SVG_XMLNS, 'use');
