@@ -1,12 +1,10 @@
 # &lt;piano-keyboard&gt;
 
-Custom web component in vanilla HTML and JS. Creates an SVG image of the piano keyboard and highlights selected keys. Written using custom components API, Shadow DOM and HTML Imports.
+Custom web component in vanilla HTML and JS. Creates an SVG image of the piano keyboard and highlights selected keys. Written using custom components API, Shadow DOM and ES6 modules.
 
 <p align="center">
   <img src="readme/preview.png" align="center" alt="Component preview" />
 </p>
-
-I was too hyped to refactor. But I will refactor, someday 😊
 
 ### Demos online
 
@@ -15,16 +13,33 @@ I was too hyped to refactor. But I will refactor, someday 😊
 
 ## Usage
 
-No magic required! Import element in the `<head>` and add `<piano-keyboard>` in the body:
+No magic required! Import module in the `<head>` and add `<piano-keyboard>` in the body:
 ```<!DOCTYPE HTML>
 <html>
   <head>
-    <link rel="import" href="piano-keyboard/piano-keyboard.html" />
+    <script type="module" src="piano-keyboard/piano-keyboard.mjs"></script>
+    <style>
+      piano-keyboard { background: none; }
+      piano-keyboard:not(:defined) { display: block; width: auto; min-height: 1em; background: #EEE; }
+    </style>  
   </head>
   <body>
     <piano-keyboard></piano-keyboard>
   </body>
 </html>
+```
+
+### Notes
+
+It is required that ES6 modules are returned with mime type `text/javascript`. You may have to register this extension with your server engine, e.g. for Apache change `httpd.conf`:
+
+```
+<IfModule mime_module>
+
+    # Make ES modules text/javascript
+    AddType text/javascript mjs
+
+</IfModule>
 ```
 
 ## Configuration options
@@ -60,4 +75,4 @@ Set these variables in CSS to modify keyboard appearance. *Note*: Applied styles
 
 ## <img src="https://opensource.org/files/osi_symbol.png" height="20" alt="Open Source" /> Licensing
 
-Copyright © 2017 Krzysztof Antoniak. Contents of this repository is licensed under GNU General Public License, version 3.0 (GPL-3.0).
+Copyright © 2017—2019 Krzysztof Antoniak. Contents of this repository is licensed under GNU General Public License, version 3.0 (GPL-3.0).

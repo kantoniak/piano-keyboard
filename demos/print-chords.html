@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>&lt;piano-keyboard&gt; demo</title>
-  <link rel="import" href="../piano-keyboard/piano-keyboard.html">
+  <script type="module" src="../piano-keyboard/piano-keyboard.mjs"></script>
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Just+Another+Hand" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="reset.css">
@@ -37,6 +37,7 @@ h1 {
     clear: both;
 }
 piano-keyboard {
+  background: none;
   --white-key-fill: unset;
   --black-key-fill: unset;
   --white-key-pressed-fill: unset;
@@ -44,6 +45,12 @@ piano-keyboard {
   --white-key-stroke: #333;
   --top-cover-fill: unset;
   --note-name-font-family: 'Just Another Hand', sans-serif;
+}
+piano-keyboard:not(:defined) {
+  display: block;
+  width: auto;
+  min-height: 1em;
+  background: #EEE;
 }
 </style>
 
